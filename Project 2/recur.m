@@ -5,8 +5,7 @@ function y = recur(a,b,n,x,x0,y0)
 % a, b, n, x, x0 and y0 are vectors
 % a = [a1 a2 ... aN]
 % b = [b0 b1 ... bM]
-% n contains the time values for which the solution will be
-computed
+% n contains the time values for which the solution will becomputed
 % y0 contains the initial conditions for y, in order,
 % i.e., y0 = [y[n0-N], y[n0-N+1], ...,y[n0-1]]
 % where n0 represents the first element of n

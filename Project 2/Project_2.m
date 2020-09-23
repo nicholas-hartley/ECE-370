@@ -1,6 +1,9 @@
 %% Problem 1
 
-% Problem 1-a
+% Problem 1-a&b
+clear all;
+close all;
+
 a1 = 1;
 b1 = [0.5 1 2];
 
@@ -8,20 +11,60 @@ n = [1:1:4];
 
 x = n.*heaviside(n);
 
-y = filter(b1,a1,x)
-% Problem 1-b
-a = [2 4 6 8];
-b = [8 6 4 2];
-c=a*b    % Can't multiply a 1x4 matrix with another 1x4 matrix
+ya = filter(b1,a1,x)
+
+a2 = [1 -0.8];
+b2  = [0 1];
+
+n = [1:1:20];
+
+x = heaviside(n);
+
+yb = filter(b2,a2,x)
 
 % Problem 1-c
-d = a.*b %Elementwise multiplication (i.e. 2*8 4*6 6*4 8*2)
+clear all;
+close all;
+
+a = -0.8;
+b  = [0 1];
+
+y0 = 0;
+x0 = 0;
+
+n = [1:1:20];
+
+x = heaviside(n);
+
+y = recur(a,b,n,x,x0,y0);
+
+stem(n,y)
+xlabel('n')
+ylabel('y[n]')
 
 % Problem 1-d
-a = [1;2;3;4];
-b = [4 3 2 1];
+clear all;
+close all;
 
-d = a*b; % Matrix Multiplies a (4x1) with b (1x4) to give a 4x4 matrix
+a = [1.5, 0.5];
+b  = [1 0 -1];
+
+y0 = [-2, -1];
+x0 = [-1, 4];
+
+n = [0:1:20];
+
+x = ((0.5).^(n-1)).*heaviside(n-1);
+
+y = recur(a,b,n,x,x0,y0);
+
+%tiledlayout(1,2)
+% stem(nexttile, n, x)
+
+%stem(nexttile, n, y)
+stem(n, y)
+xlabel('n')
+ylabel('y[n]')
 
 % Problem 1-e
 for i = 1:n

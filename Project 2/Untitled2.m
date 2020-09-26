@@ -4,7 +4,7 @@ close all;
 a = 0.5;
 N = 1000;
 
-n = linspace(0,N, 2*N); % I like the smoother curves
+n = linspace(0,N, 4*N); % I like the smoother curves
 
 load('lineup.mat');
 

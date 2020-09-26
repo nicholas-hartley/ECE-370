@@ -1,14 +1,21 @@
+% Problem 1-a&b
 clear all;
 close all;
 
-T = .001;
+a1 = 1;
+b1 = [0.5 1 2];
 
-n = [0:T:20];
+n = [1:1:4];
 
-y = 1 - cos(n);
+x = n.*heaviside(n);
 
-dydt = ((1-cos(n+1) - (1-cos(n)))/T);
+ya = filter(b1,a1,x)
 
-d2ydt2 = ((((1-cos(n+2) - (1-cos(n+1)))/T)-((1-cos(n+1) - (1-cos(n)))/T))/T);
+a2 = [1 -0.8];
+b2  = [0 1];
 
-plot(n, d2ydt2 + y)
+n = [1:1:20];
+
+x = heaviside(n);
+
+yb = filter(b2,a2,x)

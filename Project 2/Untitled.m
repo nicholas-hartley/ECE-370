@@ -1,22 +1,50 @@
 clear all;
-close all;
+% close all;
 
-a = [1.5, 0.5];
-b  = [1 0 -1];
+T = .005;
 
-y0 = [-2, -1];
-x0 = [-1, 4];
+n = [0:T:20];
 
-n = [0:1:20];
+a1 = (T * (1 + T^2)^2 * (1i - T))/((1-1i*T)^3 * (T - 2i) + (1+1i*T)^3 * (T + 2i));
+a2 = (T * (1 + T^2)^2 * (1i + T))/((1-1i*T)^3 * (T - 2i) + (1+1i*T)^3 * (T + 2i));
 
-x = ((0.5).^(n-1)).*heaviside(n-1);
+yn = a1*((1+1i*T).^n) + a2*((1-1i*T).^n) - (a1 + a2);
+
+yn = yn .* heaviside(n);
+
+yt = 1 - cos(n);
+
+yt = yt .* heaviside(n);
+
+% figure(1);
+% 
+% plot(n, yt);
+% 
+% hold on;
+% 
+% figure(2);
+% 
+% plot(n, abs(yn));
+
+a = [-2, (1+T^2)];
+b  = [T^2, 0, 0];
+
+
+y0 = [2, 1];
+x0 = [0, 0];
+
+x = heaviside(n);
 
 y = recur(a,b,n,x,x0,y0);
 
-%tiledlayout(1,2)
-% stem(nexttile, n, x)
+tiledlayout(2,2)
+stem(nexttile, n, x)
 
-%stem(nexttile, n, y)
-stem(n, y)
+stem(nexttile, n, y)
+
 xlabel('n')
 ylabel('y[n]')
+
+stem(nexttile, n, abs(yn))
+
+stem(nexttile, n, yt)

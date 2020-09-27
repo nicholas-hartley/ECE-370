@@ -146,15 +146,13 @@ load('lineup.mat');
 % This is part a
 he = [1 zeros(1,998) a]; % There should only be an impulse at n = 0, 1000
 
-
-% This is part c
-
-a1 = [1 zeros(1,998) a];
-b1 = 1;
-
 d = [1 zeros(1,4000)];
 
-her = filter([1 zeros(1,4000)], a1, d);
+a1 = [1 zeros(1,998) a];
+
+b1 = 1;
+
+her = filter(b1, a1, d);
 
 z = filter(b1, a1, y);
 plot(y);

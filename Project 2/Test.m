@@ -1,21 +1,27 @@
-% Problem 1-a&b
 clear all;
 close all;
 
-a1 = 1;
-b1 = [0.5 1 2];
+t = 1;
 
-n = [1:1:4];
+y = 1/3*((t-2)^3) + 1/2*((5-t)*(t-2)^2) + ((4-t)*(t-2)) + 13/3 - (5-3*t)/2
 
-x = n.*heaviside(n);
+t = 2;
 
-ya = filter(b1,a1,x)
+y = 1/3*((t-2)^3) + 1/2*((5-t)*(t-2)^2) + ((4-t)*(t-2)) + 13/3 - (5-3*t)/2
 
-a2 = [1 -0.8];
-b2  = [0 1];
 
-n = [1:1:20];
 
-x = heaviside(n);
-
-yb = filter(b2,a2,x)
+% n1 = linspace(-1,1,3);
+% 
+% x = heaviside(n1+1).*(1+n1) - heaviside(n1).*((1+n1) - (1-n1));
+% 
+% n2 = linspace(1,4,4);
+% 
+% h = 2*heaviside(n2-1) - 2*heaviside(n2-2) + heaviside(n2-2).*(4-n2);
+% 
+% y1 = conv(x,h);
+% 
+% plot(y1, 'g', 'LineWidth', 2);
+% hold on;
+% plot(x, 'r', 'LineWidth', 2);
+% plot(h, 'b', 'LineWidth', 2);

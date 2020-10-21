@@ -1,46 +1,109 @@
-
 clear all;
 close all;
 
-a = 0.5;
-N = 1000;
+t = [-5:0.001:5];
+D11 = mod(11808942, 11);
+D4 = mod(11808942, 4);
 
-n = linspace(0,N, 4*N); % I like the smoother curves
+T = 2;
+W = 1;
+K = 23 + D11;
 
-load('lineup.mat');
+%% Single xt
 
-% This is part a
-he = [1 zeros(1,998) a]; % There should only be an impulse at n = 0, 1000
+% xt = FSWave(t,K,T,W);
+% 
+% tiledlayout(2,1);
+% 
+% nexttile
+% 
+% plot(t, real(xt), 'r')
+%     
+% title("Real part of xt v.s. t");
+% xlabel('t');
+% ylabel('real(xt)');
+% 
+% nexttile
+% 
+% plot(t, imag(xt), 'r')
+%     
+% title("Imaginary part of xt v.s. t");
+% xlabel('t');
+% ylabel('imag(xt)');
 
+%% Five Plots
 
-% This is part c
+tiledlayout(3,2);
 
-a1 = [1 zeros(1,998) a]; % System coefficients for z
-b1 = 1;
+nexttile
 
-d = [1 zeros(1,4000)];
+K = 1 + D4;
+xt = FSWave(t, K, T, W);
 
-her = filter(1, a1, d);
+plot(t, real(xt), 'r')
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
 
-z = filter(b1, a1, y);
-plot(y, 'b', 'DisplayName', 'y');
+nexttile
 
-hold on;
+K = 7 + D4;
+xt = FSWave(t, K, T, W);
 
-plot(z, 'r', 'DisplayName', 'z');
+plot(t, real(xt), 'r')
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
 
-legend('boxon');
+nexttile
 
-sound(y, 8192);
+K = 16 + D4;
+xt = FSWave(t, K, T, W);
 
-pause(3);
+plot(t, real(xt), 'r')
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
 
-sound(z, 8192);
+nexttile
 
-hoa = conv(he, her);
+K = 100 + D4;
+xt = FSWave(t, K, T, W);
 
-figure(2);
-plot(he, '--g');
-hold on;
-plot(her, '.r');
-plot(hoa, '-b', 'LineWidth', 2);
+plot(t, real(xt), 'r')
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
+
+nexttile
+
+K = 200 + D4;
+xt = FSWave(t, K, T, W);
+
+plot(t, real(xt), 'r')
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
+
+function [xs] = SUMCS(t,A,omega)
+    xs = 0;
+    for i = 1:length(A)
+        xs = xs + A(i)*exp(j*omega(i)/2*t);
+    end
+end
+
+function [xt] = FSWave(t,K,T,W)
+    syms x
+    expr = 1-4*x^2;
+    xt = 0;
+    for i = -K:K % Not assuming discrete time
+        Xk = (1/T)*vpaintegral(expr, x, -W/4, W/4);
+        % Summing vectors of same size
+        xt = xt + SUMCS(t, Xk, 4*pi()/T*i);
+    end
+end

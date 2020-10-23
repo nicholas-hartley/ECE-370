@@ -45,127 +45,159 @@ title("Phase angle of xs v.s. t");
 xlabel('t');
 ylabel('angle(xs)');
 
+% It'll be at the bottom so that matlab stops yelling
 
-
-function [xs] = SUMCS(t,A,omega)
-    xs = 0;
-    for i = 1:length(A)
-        % Don't do elementwise multiplication of t so that it can generate
-        % different sized vectors given different t inputs
-        xs = xs + A(i)*exp(j*omega(i)/2*t);
-    end
-end
+% function [xs] = SUMCS(t,A,omega)
+%     xs = 0;
+%     for i = 1:length(A)
+%         % Don't do elementwise multiplication of t so that it can generate
+%         % different sized vectors given different t inputs
+%         xs = xs + A(i)*exp(j*omega(i)/2*t);
+%     end
+% end
 
 %% Problem 2
 
-clear all;
-close all;
+%{
 
-tiledlayout(2,2);
+All of problem 2 was hand written math to find the Fourier Series expansion
+coefficients
 
-for c = 1:4
-    T = 0.5^(c*c);
+%}
 
-    n = [0:T:20];
-
-    yt = 1 - cos(n);
-
-    yt = yt .* heaviside(n);
-
-    a = [-2, (1+T^2)];
-    b  = [T^2, 0, 0];
-
-    y0 = [0, 0];
-    x0 = [0, 0];
-
-    x = heaviside(n);
-
-    yn = recur(a,b,n,x,x0,y0);
-    
-    nexttile
-    
-    plot(n, yt, 'b', 'DisplayName', 'y(t)' )
-    
-    hold on;
-    
-    plot(n, yn, 'r', 'DisplayName', 'y[n]')
-    
-    title("T is " + T);
-    xlabel('n');
-    ylabel('y(t) & y[n]');
-    
-end
 
 %% Problem 3
 
 clear all;
 close all;
 
-nx = 0;
-Nx = 5;
-Samples = 100;
+t = [-5:0.001:5];
+D11 = mod(11808942, 11);
+D4 = mod(11808942, 4);
 
-n = linspace(nx,Nx,Samples);
+T = 2;
+W = 1;
+K = 23 + D11;
 
-t = linspace(nx,2*Nx,199); % Would be 2*Nx - (Nx-nx)/samples if not inclusive
+xt = FSWave(t, K, T, W);
 
-x = heaviside(n);
+%% Single xt
 
-h = n.*heaviside(n);
+% tiledlayout(2,1);
+% 
+% nexttile
+% 
+% plot(t, real(xt), '.-r', 'LineWidth', 1.5);
+% 
+% title("Real part of xt v.s. t");
+% xlabel('t');
+% ylabel('real(xt)');
+% 
+% nexttile
+% 
+% plot(t, imag(xt), '.-b', 'LineWidth', 1.5)
+%     
+% title("Imaginary part of xt v.s. t");
+% xlabel('t');
+% ylabel('imag(xt)');
 
-y = conv(x, h);
+%% Five Plots
 
-plot(t, y)
+tiledlayout(3,2);
 
-title('conv(x[n], h[n])');
-xlabel('n');
-ylabel('y[n]');
+nexttile
+
+K = 1 + D4;
+xt = FSWave(t, K, T, W);
+
+plot(t, real(xt),  '.-r', 'LineWidth', 1.25)
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
+
+nexttile
+
+K = 7 + D4;
+xt = FSWave(t, K, T, W);
+
+plot(t, real(xt), '.-r', 'LineWidth', 1.25)
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
+
+nexttile
+
+K = 16 + D4;
+xt = FSWave(t, K, T, W);
+
+plot(t, real(xt),  '.-r', 'LineWidth', 1.25)
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
+
+nexttile
+
+K = 100 + D4;
+xt = FSWave(t, K, T, W);
+
+plot(t, real(xt),  '.-r', 'LineWidth', 1.25)
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
+
+nexttile
+
+K = 200 + D4;
+xt = FSWave(t, K, T, W);
+
+plot(t, real(xt),  '.-r', 'LineWidth', 1.25)
+    
+title("Real part of xt v.s. t for K=" + K);
+xlabel('t');
+ylabel('real(xt)');
+
+% Commented out so matlab will stop yelling at me
+
+% function [xs] = SUMCS(t,A,omega)
+%     xs = 0;
+%     for i = 1:length(A)
+%         xs = xs + A(i)*exp(j*omega(i)/2*t);
+%     end
+% end
+
+% function [xt] = FSWave(t,K,T,W)
+%     syms x k
+%     expr = (1-4*x^2)*exp(-1i*2*pi*k*x/T);
+%     xt = zeros(1,length(t));
+%     for i = -K:K % Not assuming discrete time
+%         expr2 = subs(expr, k, i);
+%         Xk = (1/T)*vpaintegral(expr2, x, -W/4, W/4);
+%         % Summing vectors of same size
+%         xt = xt + SUMCS(t, Xk, 4*pi()/T*i);
+%     end
+% end
 
 %% Problem 4
 
-clear all;
-close all;
+function [xs] = SUMCS(t,A,omega)
+    xs = 0;
+    for i = 1:length(A)
+        xs = xs + A(i)*exp(j*omega(i)/2*t);
+    end
+end
 
-a = 0.5;
-N = 1000;
-
-n = linspace(0,N, N); % I like the smoother curves
-
-load('lineup.mat');
-
-% This is part a
-he = [1 zeros(1,999) a]; % There should only be an impulse at n = 0, 1000
-% Side note matlab is 1 indexed, so n = 1000 correlates to 1001
-
-plot(he)
-% This is part c
-
-a1 = [1 zeros(1,999) a]; % System coefficients for z
-b1 = 1;
-
-d = [1 zeros(1,4000)];
-
-her = filter(1, a1, d);
-
-z = filter(b1, a1, y);
-plot(y, 'b', 'DisplayName', 'y');
-
-hold on;
-
-plot(z, 'r', 'DisplayName', 'z');
-
-legend('boxon');
-
-sound(y, 8192);
-
-pause(3);
-
-sound(z, 8192);
-
-hoa = conv(he, her);
-
-figure(2);
-% plot(her, '.-r', 'LineWidth', 2);
-% hold on;
-plot(hoa, '-b', 'LineWidth', 2);
-% plot(he, '--g', 'LineWidth', 2);
+function [xt] = FSWave(t,K,T,W)
+    syms x k
+    expr = (1-4*x^2)*exp(-1i*2*pi*k*x/T);
+    xt = zeros(1,length(t));
+    for i = -K:K % Not assuming discrete time
+        expr2 = subs(expr, k, i);
+        Xk = (1/T)*vpaintegral(expr2, x, -W/4, W/4);
+        % Summing vectors of same size
+        xt = xt + SUMCS(t, Xk, 4*pi()/T*i);
+    end
+end

@@ -1,27 +1,53 @@
 clear all;
 close all;
 
-t = 1;
+t = [0:0.001:1];
+n = mod(11808942, 41);
 
-y = 1/3*((t-2)^3) + 1/2*((5-t)*(t-2)^2) + ((4-t)*(t-2)) + 13/3 - (5-3*t)/2
+A = (rand(1,n).*3)+(rand(1,n).*3i);
+omega = (rand(1,n).*pi());
 
-t = 2;
+xs = SUMCS(t,A,omega);
 
-y = 1/3*((t-2)^3) + 1/2*((5-t)*(t-2)^2) + ((4-t)*(t-2)) + 13/3 - (5-3*t)/2
+tiledlayout(2,2);
+
+nexttile
+
+plot(t, real(xs), 'r')
+    
+title("Real part of xs v.s. t");
+xlabel('t');
+ylabel('real(xs)');
+
+nexttile
+
+plot(t, imag(xs), 'r')
+    
+title("Imaginary part of xs v.s. t");
+xlabel('t');
+ylabel('imag(xs)');
+
+nexttile
+
+plot(t, abs(xs), 'r')
+    
+title("Magnitude of xs v.s. t");
+xlabel('t');
+ylabel('abs(xs)');
+
+nexttile
+
+plot(t, angle(xs), 'r')
+    
+title("Phase angle of xs v.s. t");
+xlabel('t');
+ylabel('angle(xs)');
 
 
 
-% n1 = linspace(-1,1,3);
-% 
-% x = heaviside(n1+1).*(1+n1) - heaviside(n1).*((1+n1) - (1-n1));
-% 
-% n2 = linspace(1,4,4);
-% 
-% h = 2*heaviside(n2-1) - 2*heaviside(n2-2) + heaviside(n2-2).*(4-n2);
-% 
-% y1 = conv(x,h);
-% 
-% plot(y1, 'g', 'LineWidth', 2);
-% hold on;
-% plot(x, 'r', 'LineWidth', 2);
-% plot(h, 'b', 'LineWidth', 2);
+function [xs] = SUMCS(t,A,omega)
+    xs = 0;
+    for i = 1:length(A)
+        xs = xs + A(i)*exp(j*omega(i)/2*t);
+    end
+end
